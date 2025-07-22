@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: vote
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: vote
+  template:
+    metadata:
+      labels:
+        app: vote
+    spec:
+      containers:
+      - name: vote
+        image: schoolofdevops/vote:v1  # Update to your desired image
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+  strategy:
+    blueGreen:
+      autoPromotionEnabled: true
+      autoPromotionSeconds: 30
+      activeService: vote
+      previewService: vote-preview
+
